@@ -1,12 +1,9 @@
-
 import sqlite3
 import streamlit as st
 import pandas as pd
 from datetime import date
 
 from database import get_connection, init_db, seed_data
-from lab2_data import populate_lab2_model
-from lab2_page import show_lab2_page
 from energy_data import (
     YEARS, MONTHS,
     generate_consumption,
@@ -15,7 +12,6 @@ from energy_data import (
 
 init_db()
 seed_data()
-populate_lab2_model()
 
 st.set_page_config(
     page_title="Eco Energy Management",
@@ -63,10 +59,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-
 with st.sidebar:
     st.title("🍿 Planetakino")
-    st.caption("Eco Energy Management System")
 
     st.divider()
 
@@ -78,11 +72,8 @@ with st.sidebar:
             "⚡ Ресурси",
             "🔗 Енергетичний паспорт",
             "💰 Тарифи",
-            "📊 Споживання ресурсів",
-            "📐 Енергетичні індикатори (ЛР №2)"
         ]
     )
-
 
 
 
@@ -585,7 +576,6 @@ elif page == "💰 Тарифи":
                 conn = get_connection()
 
                 try:
-
                     overlap = conn.execute("""
                         SELECT COUNT(*)
                         FROM tariffs
@@ -944,5 +934,3 @@ elif page == "📊 Споживання ресурсів":
             st.success("Дані про послуги збережено!")
             st.rerun()
 
-elif page == "📐 Енергетичні індикатори (ЛР №2)":
-    show_lab2_page()
