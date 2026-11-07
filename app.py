@@ -5,6 +5,8 @@ import pandas as pd
 from datetime import date
 
 from database import get_connection, init_db, seed_data
+from lab2_data import populate_lab2_model
+from lab2_page import show_lab2_page
 from energy_data import (
     YEARS, MONTHS,
     generate_consumption,
@@ -15,6 +17,7 @@ from energy_data import (
 # Ініціалізація бази даних
 init_db()
 seed_data()
+populate_lab2_model()
 
 st.set_page_config(
     page_title="Eco Energy Management",
@@ -67,7 +70,7 @@ st.markdown("""
 # Бічне меню
 with st.sidebar:
     st.title("🍿 Planetakino")
-
+    st.caption("Eco Energy Management System")
 
     st.divider()
 
@@ -79,13 +82,11 @@ with st.sidebar:
             "⚡ Ресурси",
             "🔗 Енергетичний паспорт",
             "💰 Тарифи",
-            "📊 Споживання ресурсів"
+            "📊 Споживання ресурсів",
+            "📐 Енергетичні індикатори (ЛР №2)"
         ]
     )
 
-    st.divider()
-    st.caption("Лабораторна робота №1")
-    st.caption("Комп'ютерний еко-енергетичний менеджмент")
 
 
 # Сторінка 1. Огляд
@@ -134,10 +135,6 @@ if page == "🏠 Огляд":
     st.write("**Сфера діяльності:** демонстрація кінофільмів")
     st.write("**Період дослідження:** 2016–2025 роки")
 
-    st.info(
-        "У системі використовуються модельні дані "
-        "для навчального аналізу енергоспоживання."
-    )
 
 
 # Сторінка 2. Підрозділи
@@ -967,3 +964,8 @@ elif page == "📊 Споживання ресурсів":
             st.success("Дані про послуги збережено!")
             st.rerun()
 
+
+
+# Новий модуль другої лабораторної
+elif page == "📐 Енергетичні індикатори (ЛР №2)":
+    show_lab2_page()
