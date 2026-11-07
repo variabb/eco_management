@@ -13,8 +13,6 @@ MONTHS = [
     "Вересень", "Жовтень", "Листопад", "Грудень"
 ]
 
-# Модельні межі споживання за місяць.
-# Для води значення задані в тис. м³.
 BASE_RANGES = {
     "Кінозали": {
         "Електроенергія": (15000, 25000),
@@ -45,7 +43,7 @@ BASE_RANGES = {
 
 
 def seasonal_factor(resource, month):
-    """Модельна залежність споживання від сезону."""
+
 
     winter = month in (12, 1, 2)
     summer = month in (6, 7, 8)
@@ -67,7 +65,7 @@ def seasonal_factor(resource, month):
 
 
 def generate_consumption():
-    """Генерує дані, не перезаписуючи наявні."""
+
 
     rng = random.Random(2026)
     conn = get_connection()
@@ -165,10 +163,6 @@ def generate_consumption():
 
 
 def find_tariff(conn, resource_id, department_id, year, month):
-    """Шукає тариф на перше число місяця.
-
-    Тариф підрозділу має пріоритет над загальним.
-    """
 
     month_date = date(year, month, 1).isoformat()
 
@@ -192,7 +186,6 @@ def find_tariff(conn, resource_id, department_id, year, month):
 
 
 def build_report(year, department_id=None):
-    """Формує таблицю за зразком 1.7 методички."""
 
     conn = get_connection()
 

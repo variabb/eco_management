@@ -1,4 +1,4 @@
-"""Автоматичні перевірки лабораторної №2 (запуск: python test_lab2.py)."""
+
 import math
 from database import get_connection, init_db,seed_data
 from lab2_data import populate_lab2_model, CO2_ELECTRIC_KG_PER_KWH, CO2_HEAT_KG_PER_GCAL
@@ -42,7 +42,7 @@ def run_checks():
         assert math.isclose(annual_kpi(2025,2)['revenue_grn'], kpi['revenue_grn'])
         assert annual_kpi(2025,3)['revenue_grn']==0
         assert all(r['energy_intensity_kwh_per_1000grn'] is None for r in monthly_indicators(2025,3))
-        # Повторне наповнення не збільшує кількість записів
+
         populate_lab2_model()
         for table,num in expected.items():
             assert conn.execute(f'SELECT COUNT(*) FROM {table}').fetchone()[0]==num

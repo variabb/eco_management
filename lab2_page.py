@@ -1,6 +1,4 @@
-"""Новий розділ Streamlit для лабораторної №2.
-Відокремлено від app.py, щоб не ламати готову лабораторну №1.
-"""
+
 import pandas as pd
 import streamlit as st
 from database import get_connection

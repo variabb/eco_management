@@ -3,7 +3,7 @@ from database import get_connection
 
 conn = get_connection()
 
-# Перевіряємо кількість записів
+
 tables = [
     "departments",
     "resources",
@@ -22,7 +22,6 @@ for table in tables:
 
     print(f"{table}: {count} записів")
 
-# Перевіряємо покриття за роками
 print("\n=== ДАНІ ЗА РОКАМИ ===")
 
 rows = conn.execute("""
@@ -45,7 +44,7 @@ production = conn.execute("""
 
 print(f"Записів про послуги: {production}")
 
-# Перевіряємо цілісність зв'язків
+
 errors = conn.execute(
     "PRAGMA foreign_key_check"
 ).fetchall()

@@ -1,6 +1,4 @@
-"""Експорт розрахунків ЛР №2 у CSV без додаткових бібліотек.
-Запуск: python export_lab2.py
-"""
+
 import csv
 from pathlib import Path
 from indicators import year_comparison, year_statistics, monthly_indicators, month_rows

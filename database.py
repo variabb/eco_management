@@ -1,4 +1,3 @@
-
 import sqlite3
 from pathlib import Path
 
@@ -15,7 +14,7 @@ def init_db():
     conn = get_connection()
     cursor = conn.cursor()
 
-    # 1. Підприємство та його підрозділи
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS departments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -52,7 +51,7 @@ def init_db():
         )
     """)
 
-    # 4. Помісячне споживання ресурсів
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS consumption (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -72,7 +71,7 @@ def init_db():
         )
     """)
 
-    # 5. Обсяги виробництва продукції та послуг
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS production (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -110,7 +109,7 @@ def seed_data():
     conn = get_connection()
     cursor = conn.cursor()
 
-    # Додаємо підприємство та умовні зони обліку
+
     cursor.execute("SELECT COUNT(*) FROM departments")
 
     if cursor.fetchone()[0] == 0:
@@ -134,7 +133,6 @@ def seed_data():
             VALUES (?, ?, ?)
         """, departments)
 
-    # Створюємо довідник ресурсів
     resources = [
         ("Електроенергія", "кВт·год"),
         ("Теплова енергія", "Гкал"),

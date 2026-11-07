@@ -65,11 +65,7 @@ def year_statistics(year, department_id=None):
 
 
 def monthly_indicators(year, department_id=None):
-    """Умовні енергетичні та екологічні індикатори помісячно.
 
-    Важливо: production містить виручку лише кінозалів; на рівні інших
-    підрозділів показник енергоємності не визначаємо, якщо виручка відсутня.
-    """
     conn=get_connection()
     try:
         query='''SELECT d.id,d.name,d.heated_area,c.month,c.working_days,c.outdoor_temp,c.indoor_temp
@@ -125,7 +121,7 @@ def monthly_indicators(year, department_id=None):
 
 
 def annual_kpi(year, department_id=None):
-    """Вагові агрегати: частки за сумами, а не середні відсотки."""
+
     rows=monthly_indicators(year,department_id)
     e=sum(x['electricity_kwh'] for x in rows)
     h=sum(x['heat_gcal'] for x in rows)

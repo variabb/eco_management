@@ -13,8 +13,6 @@ from energy_data import (
     build_report
 )
 
-
-# Ініціалізація бази даних
 init_db()
 seed_data()
 populate_lab2_model()
@@ -44,8 +42,6 @@ def execute_query(query, params=()):
     finally:
         conn.close()
 
-
-# Стилізація
 st.markdown("""
 <style>
     .block-container {
@@ -67,7 +63,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# Бічне меню
+
 with st.sidebar:
     st.title("🍿 Planetakino")
     st.caption("Eco Energy Management System")
@@ -89,7 +85,7 @@ with st.sidebar:
 
 
 
-# Сторінка 1. Огляд
+
 if page == "🏠 Огляд":
     st.title("🏠 Панель управління")
     st.subheader("Планета Кіно — Блокбастер")
@@ -136,8 +132,6 @@ if page == "🏠 Огляд":
     st.write("**Період дослідження:** 2016–2025 роки")
 
 
-
-# Сторінка 2. Підрозділи
 elif page == "🏢 Підрозділи":
     st.title("🏢 Структура підприємства")
 
@@ -219,7 +213,6 @@ elif page == "🏢 Підрозділи":
                 st.rerun()
 
 
-# Сторінка 3. Ресурси
 elif page == "⚡ Ресурси":
     st.title("⚡ Енергетичні ресурси")
 
@@ -418,7 +411,6 @@ elif page == "🔗 Енергетичний паспорт":
         st.info("Ресурси ще не призначені.")
 
 
-# Сторінка 5. Тарифи
 elif page == "💰 Тарифи":
     st.title("💰 Управління тарифами")
 
@@ -459,7 +451,6 @@ elif page == "💰 Тарифи":
             f"{department_id} — {name}"
         ] = department_id
 
-    # Генерація початкових модельних тарифів
     st.subheader("⚙️ Автоматичне заповнення")
 
     st.write(
@@ -491,7 +482,6 @@ elif page == "💰 Тарифи":
                 if name not in sample_prices:
                     continue
 
-                # Не перезаписуємо вже наявні тарифи
                 existing = conn.execute("""
                     SELECT COUNT(*)
                     FROM tariffs
@@ -534,7 +524,6 @@ elif page == "💰 Тарифи":
 
     st.divider()
 
-    # Ручне додавання тарифів
     st.subheader("➕ Додати тариф вручну")
 
     with st.form("add_tariff"):
@@ -596,7 +585,7 @@ elif page == "💰 Тарифи":
                 conn = get_connection()
 
                 try:
-                    # Перевірка перетину тарифних періодів
+
                     overlap = conn.execute("""
                         SELECT COUNT(*)
                         FROM tariffs
@@ -644,7 +633,6 @@ elif page == "💰 Тарифи":
 
     st.divider()
 
-    # Таблиця тарифів
     st.subheader("📋 Історія тарифів")
 
     tariffs = fetch_data("""
@@ -691,7 +679,6 @@ elif page == "💰 Тарифи":
     else:
         st.warning("Тарифи ще не додані.")
 
-# Сторінка 6. Споживання ресурсів
 elif page == "📊 Споживання ресурсів":
     st.title("📊 Моніторинг енергоспоживання")
 
@@ -705,7 +692,6 @@ elif page == "📊 Споживання ресурсів":
         "виключно для навчальної лабораторної роботи."
     )
 
-    # Генерація
     st.subheader("⚙️ Генерація даних за 10 років")
 
     if st.button(
@@ -735,7 +721,6 @@ elif page == "📊 Споживання ресурсів":
     for dept_id, name in departments:
         department_options[name] = dept_id
 
-    # Зведені таблиці
     st.subheader("📋 Зведена таблиця споживання")
 
     col1, col2 = st.columns(2)
@@ -790,9 +775,6 @@ elif page == "📊 Споживання ресурсів":
 
     st.divider()
 
-
-
-    # Редагування споживання
     st.subheader("✏️ Ручне редагування споживання")
 
     edit_department = st.selectbox(
@@ -841,7 +823,6 @@ elif page == "📊 Споживання ресурсів":
         resource_id = resource_options[selected_resource]
         month_number = MONTHS.index(edit_month) + 1
 
-        # Отримуємо поточне значення з БД
         existing = fetch_data("""
             SELECT amount
             FROM consumption
@@ -912,7 +893,6 @@ elif page == "📊 Споживання ресурсів":
 
     st.divider()
 
-    # Редагування виробництва послуг
     st.subheader("🎟️ Обсяги реалізації послуг")
 
     with st.form("edit_production"):
@@ -964,8 +944,5 @@ elif page == "📊 Споживання ресурсів":
             st.success("Дані про послуги збережено!")
             st.rerun()
 
-
-
-# Новий модуль другої лабораторної
 elif page == "📐 Енергетичні індикатори (ЛР №2)":
     show_lab2_page()

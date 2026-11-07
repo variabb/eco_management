@@ -1,6 +1,4 @@
-"""ЛР №2: модельні умови, витрати, власна генерація та CO₂.
-Дані синтетичні, створені для навчальної задачі; не звітність кінотеатру.
-"""
+
 import calendar
 import math
 from database import get_connection
@@ -13,7 +11,7 @@ HEATED_AREAS_M2 = {
     'Фойє': 460.0,
     'Адміністративно-технічна зона': 350.0,
 }
-# Умовні фактори, а НЕ перевірені коефіцієнти для конкретного підприємства.
+
 CO2_ELECTRIC_KG_PER_KWH = 0.40
 CO2_HEAT_KG_PER_GCAL = 230.0
 GCAL_TO_KWH = 1162.22
@@ -72,7 +70,6 @@ def create_lab2_schema():
 
 
 def populate_lab2_model():
-    """Заповнення відсутніх модельних даних; повторний запуск без дублювання."""
     create_lab2_schema()
     conn = get_connection()
     try:
@@ -93,7 +90,7 @@ def populate_lab2_model():
                     conn.execute('''INSERT OR IGNORE INTO monthly_conditions
                        (department_id,year,month,working_days,outdoor_temp,indoor_temp)
                        VALUES (?,?,?,?,?,?)''', (dept_id,year,month,working_days,temp,indoor))
-                    # Реалізація сценарію власної генерації: УМОВНІ сонячні панелі з 2023 р.
+
                     if name == 'Адміністративно-технічна зона':
                         solar = 0.0
                         if year >= 2023 and not closed:
@@ -101,8 +98,7 @@ def populate_lab2_model():
                         conn.execute('''INSERT OR IGNORE INTO monthly_generation
                            (department_id,resource_id,year,month,amount)
                            VALUES (?,?,?,?,?)''',(dept_id,electricity_id,year,month,solar))
-                    # Умовний розподіл споживання електроенергії:
-                    # освітлення / кондиціювання / інше (без лічильників це лише модель).
+
                     electricity = conn.execute('''SELECT c.amount FROM consumption c JOIN resources r ON r.id=c.resource_id
                         WHERE c.department_id=? AND c.year=? AND c.month=?
                         AND r.name='Електроенергія' ''',(dept_id,year,month)).fetchone()
@@ -113,7 +109,7 @@ def populate_lab2_model():
                     conn.execute('''INSERT OR IGNORE INTO monthly_electricity_breakdown
                         (department_id,year,month,lighting_kwh,cooling_kwh,other_kwh)
                         VALUES(?,?,?,?,?,?)''',(dept_id,year,month,lighting,cooling,others))
-                    # Фінансова модель: енергія + інші ресурси + умовні операційні витрати.
+
                     items = conn.execute('''SELECT c.resource_id,c.amount,r.name FROM consumption c
                         JOIN resources r ON r.id=c.resource_id
                         WHERE c.department_id=? AND c.year=? AND c.month=?''',(dept_id,year,month)).fetchall()
@@ -135,9 +131,7 @@ def populate_lab2_model():
 
 
 def refresh_electricity_breakdown():
-    """Синхронізує освітлення / кондиціювання після ручного редагування ЛР №1.
-    Частки модельні; окремих лічильників у вихідній базі немає.
-    """
+
     conn = get_connection()
     try:
         rows = conn.execute("""SELECT c.department_id,d.name,c.year,c.month,c.amount
@@ -162,7 +156,7 @@ def refresh_electricity_breakdown():
 
 
 def refresh_emissions():
-    """Оновлює розрахункові викиди із поточних показників споживання."""
+
     conn = get_connection()
     try:
         rows = conn.execute('''SELECT c.department_id,c.year,c.month,
@@ -181,7 +175,6 @@ def refresh_emissions():
 
 
 def refresh_finances():
-    """Не перераховує довільні фінансові дані користувача; фінансовий план редагується окремо."""
     return None
 
 
