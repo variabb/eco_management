@@ -22,6 +22,7 @@ for table in tables:
 
     print(f"{table}: {count} записів")
 
+
 print("\n=== ДАНІ ЗА РОКАМИ ===")
 
 rows = conn.execute("""
@@ -34,7 +35,7 @@ rows = conn.execute("""
 for year, count in rows:
     print(f"{year}: {count} записів")
 
-# Перевіряємо виробництво послуг
+
 print("\n=== ВИРОБНИЦТВО ПОСЛУГ ===")
 
 production = conn.execute("""

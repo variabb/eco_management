@@ -13,6 +13,7 @@ MONTHS = [
     "Вересень", "Жовтень", "Листопад", "Грудень"
 ]
 
+
 BASE_RANGES = {
     "Кінозали": {
         "Електроенергія": (15000, 25000),
@@ -93,15 +94,14 @@ def generate_consumption():
             for year in YEARS:
                 for month in range(1, 13):
 
-                    # Умовний сценарій призупинення
-                    # роботи у квітні-травні 2020 року.
+
                     if year == 2020 and month in (4, 5):
                         amount = 0.0
                     else:
                         base = rng.uniform(low, high)
                         season = seasonal_factor(res_name, month)
 
-                        # Умовна поступова зміна споживання
+
                         trend = 1 + 0.012 * (year - 2016)
 
                         amount = round(
@@ -120,7 +120,7 @@ def generate_consumption():
 
                     added += cursor.rowcount
 
-        # Модельні обсяги реалізації кінопоказів
+
         cinema = conn.execute("""
             SELECT id
             FROM departments
@@ -164,6 +164,7 @@ def generate_consumption():
 
 def find_tariff(conn, resource_id, department_id, year, month):
 
+
     month_date = date(year, month, 1).isoformat()
 
     row = conn.execute("""
@@ -186,6 +187,7 @@ def find_tariff(conn, resource_id, department_id, year, month):
 
 
 def build_report(year, department_id=None):
+
 
     conn = get_connection()
 
@@ -262,7 +264,7 @@ def build_report(year, department_id=None):
                 "грн"
             )
 
-        # Додаємо обсяги виробництва послуг
+
         production_query = """
             SELECT month, SUM(revenue)
             FROM production

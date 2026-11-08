@@ -1,17 +1,23 @@
+
 import sqlite3
 import streamlit as st
 import pandas as pd
 from datetime import date
 
 from database import get_connection, init_db, seed_data
+from lab2_data import populate_lab2_model
+from lab2_page import show_lab2_page
+from lab3_page import show_lab3_page
 from energy_data import (
     YEARS, MONTHS,
     generate_consumption,
     build_report
 )
 
+
 init_db()
 seed_data()
+populate_lab2_model()
 
 st.set_page_config(
     page_title="Eco Energy Management",
@@ -20,7 +26,6 @@ st.set_page_config(
 )
 
 
-# Робота з базою даних
 def fetch_data(query, params=()):
     conn = get_connection()
     try:
@@ -37,6 +42,7 @@ def execute_query(query, params=()):
         conn.commit()
     finally:
         conn.close()
+
 
 st.markdown("""
 <style>
@@ -61,6 +67,7 @@ st.markdown("""
 
 with st.sidebar:
     st.title("🍿 Planetakino")
+    st.caption("Eco Energy Management System")
 
     st.divider()
 
@@ -72,9 +79,11 @@ with st.sidebar:
             "⚡ Ресурси",
             "🔗 Енергетичний паспорт",
             "💰 Тарифи",
+            "📊 Споживання ресурсів",
+            "📐 Енергетичні індикатори (ЛР №2)",
+            "📈 Графічний аналіз (ЛР №3)"
         ]
     )
-
 
 
 if page == "🏠 Огляд":
@@ -121,6 +130,10 @@ if page == "🏠 Огляд":
     st.write("**Адреса:** проспект Степана Бандери, 34В")
     st.write("**Сфера діяльності:** демонстрація кінофільмів")
     st.write("**Період дослідження:** 2016–2025 роки")
+
+    st.info(
+        "Доступний перегляд і аналіз споживання ресурсів за 2016–2025 роки."
+    )
 
 
 elif page == "🏢 Підрозділи":
@@ -411,8 +424,7 @@ elif page == "💰 Тарифи":
     )
 
     st.info(
-        "У лабораторній використовуються модельні тарифи. "
-        "Вони не є фактичними тарифами кінотеатру."
+        "Тариф залежить від вибраного періоду й підрозділу."
     )
 
     resources = fetch_data("""
@@ -442,11 +454,11 @@ elif page == "💰 Тарифи":
             f"{department_id} — {name}"
         ] = department_id
 
+
     st.subheader("⚙️ Автоматичне заповнення")
 
     st.write(
-        "Можна автоматично сформувати навчальні "
-        "тарифи за 2016–2025 роки."
+        "Автоматичне заповнення тарифів за 2016–2025 роки."
     )
 
     sample_prices = {
@@ -463,7 +475,7 @@ elif page == "💰 Тарифи":
         ("2023-01-01", "2025-12-31")
     ]
 
-    if st.button("⚡ Згенерувати модельні тарифи"):
+    if st.button("⚡ Сформувати тарифи"):
         conn = get_connection()
 
         try:
@@ -472,6 +484,7 @@ elif page == "💰 Тарифи":
             for resource_id, name, unit in resources:
                 if name not in sample_prices:
                     continue
+
 
                 existing = conn.execute("""
                     SELECT COUNT(*)
@@ -514,6 +527,7 @@ elif page == "💰 Тарифи":
             conn.close()
 
     st.divider()
+
 
     st.subheader("➕ Додати тариф вручну")
 
@@ -576,6 +590,7 @@ elif page == "💰 Тарифи":
                 conn = get_connection()
 
                 try:
+
                     overlap = conn.execute("""
                         SELECT COUNT(*)
                         FROM tariffs
@@ -623,6 +638,7 @@ elif page == "💰 Тарифи":
 
     st.divider()
 
+
     st.subheader("📋 Історія тарифів")
 
     tariffs = fetch_data("""
@@ -669,6 +685,7 @@ elif page == "💰 Тарифи":
     else:
         st.warning("Тарифи ще не додані.")
 
+
 elif page == "📊 Споживання ресурсів":
     st.title("📊 Моніторинг енергоспоживання")
 
@@ -678,9 +695,9 @@ elif page == "📊 Споживання ресурсів":
     )
 
     st.info(
-        "Дані є модельними та використовуються "
-        "виключно для навчальної лабораторної роботи."
+        "Споживання можна редагувати в таблиці нижче."
     )
+
 
     st.subheader("⚙️ Генерація даних за 10 років")
 
@@ -710,6 +727,7 @@ elif page == "📊 Споживання ресурсів":
 
     for dept_id, name in departments:
         department_options[name] = dept_id
+
 
     st.subheader("📋 Зведена таблиця споживання")
 
@@ -765,6 +783,7 @@ elif page == "📊 Споживання ресурсів":
 
     st.divider()
 
+
     st.subheader("✏️ Ручне редагування споживання")
 
     edit_department = st.selectbox(
@@ -812,6 +831,7 @@ elif page == "📊 Споживання ресурсів":
 
         resource_id = resource_options[selected_resource]
         month_number = MONTHS.index(edit_month) + 1
+
 
         existing = fetch_data("""
             SELECT amount
@@ -883,6 +903,7 @@ elif page == "📊 Споживання ресурсів":
 
     st.divider()
 
+
     st.subheader("🎟️ Обсяги реалізації послуг")
 
     with st.form("edit_production"):
@@ -934,3 +955,10 @@ elif page == "📊 Споживання ресурсів":
             st.success("Дані про послуги збережено!")
             st.rerun()
 
+
+elif page == "📐 Енергетичні індикатори (ЛР №2)":
+    show_lab2_page()
+
+
+elif page == "📈 Графічний аналіз (ЛР №3)":
+    show_lab3_page()

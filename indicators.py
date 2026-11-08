@@ -1,4 +1,6 @@
 
+
+
 from collections import defaultdict
 from database import get_connection
 from energy_data import find_tariff
@@ -15,8 +17,9 @@ def annual_nonuniformity(values):
     return max(positive)/min(positive) if positive else None
 
 
-
 def month_rows(year, department_id=None, resource_id=None):
+
+
     conn = get_connection()
     try:
         conditions = { (d,m): days for d,m,days in conn.execute(
@@ -44,6 +47,7 @@ def month_rows(year, department_id=None, resource_id=None):
 
 
 def year_statistics(year, department_id=None):
+
     grouped=defaultdict(list)
     for row in month_rows(year,department_id):
         grouped[(row['department_id'],row['department'],row['resource'],row['unit'])].append(row)
@@ -65,6 +69,7 @@ def year_statistics(year, department_id=None):
 
 
 def monthly_indicators(year, department_id=None):
+
 
     conn=get_connection()
     try:

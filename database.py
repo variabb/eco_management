@@ -1,3 +1,4 @@
+
 import sqlite3
 from pathlib import Path
 
@@ -26,7 +27,7 @@ def init_db():
         )
     """)
 
-    # 2. Довідник ресурсів
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS resources (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,7 +36,7 @@ def init_db():
         )
     """)
 
-    # 3. Тарифи з періодами дії
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS tariffs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -132,6 +133,7 @@ def seed_data():
             INSERT INTO departments (name, type, parent_id)
             VALUES (?, ?, ?)
         """, departments)
+
 
     resources = [
         ("Електроенергія", "кВт·год"),

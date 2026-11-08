@@ -1,4 +1,6 @@
 
+
+
 import calendar
 import math
 from database import get_connection
@@ -70,6 +72,7 @@ def create_lab2_schema():
 
 
 def populate_lab2_model():
+
     create_lab2_schema()
     conn = get_connection()
     try:
@@ -98,6 +101,7 @@ def populate_lab2_model():
                         conn.execute('''INSERT OR IGNORE INTO monthly_generation
                            (department_id,resource_id,year,month,amount)
                            VALUES (?,?,?,?,?)''',(dept_id,electricity_id,year,month,solar))
+
 
                     electricity = conn.execute('''SELECT c.amount FROM consumption c JOIN resources r ON r.id=c.resource_id
                         WHERE c.department_id=? AND c.year=? AND c.month=?
@@ -131,6 +135,7 @@ def populate_lab2_model():
 
 
 def refresh_electricity_breakdown():
+
 
     conn = get_connection()
     try:
@@ -175,9 +180,10 @@ def refresh_emissions():
 
 
 def refresh_finances():
+
     return None
 
 
 if __name__ == '__main__':
     populate_lab2_model()
-    print('Модельні показники лабораторної №2 сформовано.')
+    print('Дані лабораторної №2 сформовано.')

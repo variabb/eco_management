@@ -1,4 +1,6 @@
 
+
+
 import pandas as pd
 import streamlit as st
 from database import get_connection
@@ -27,8 +29,7 @@ def _download_csv(data, filename):
 
 def show_lab2_page():
     st.title('📐 Енергетичні індикатори — лабораторна №2')
-    st.caption('Кінотеатр «Планета Кіно — Блокбастер» · демонстраційні модельні дані 2016–2025')
-
+    st.caption('Кінотеатр «Планета Кіно — Блокбастер» · 2016–2025')
 
     db = get_connection()
     try:
@@ -93,7 +94,7 @@ def show_lab2_page():
             'Мінімум','Місяць min','Максимум','Місяць max','Коеф. нерівномірності','Місяці без споживання'])
         st.dataframe(summary,hide_index=True,use_container_width=True,height=440)
         _download_csv(summary,f'lab2_nonuniformity_{year}.csv')
-        st.caption('Середньодобове за рік — середнє значення за активні місяці')
+        st.caption('Середньодобове за рік — середнє значення за активні місяці; це не річна сума споживання.')
 
     with tab3:
         st.subheader('Енергетичні індикатори')
@@ -115,7 +116,7 @@ def show_lab2_page():
             'Власна генерація, кВт·год','Частка генерації, %','Енергоємність, кВт·год/тис. грн'])
         st.dataframe(table,hide_index=True,use_container_width=True,height=410)
         _download_csv(table,f'lab2_kpi_{year}.csv')
-
+        st.warning('Показники освітлення й кондиціювання розраховані за розподілом загального споживання електроенергії.')
         comparison=year_comparison(2016,2025,dept_id)
         cmp=pd.DataFrame(comparison)[['year','energy_eq_kwh','energy_share_percent','generation_share_percent','co2_kg']]
         cmp.columns=['Рік','Енергоспоживання, кВт·год екв.','Енерговитрати, %','Генерація, %','CO₂, кг']
@@ -123,8 +124,8 @@ def show_lab2_page():
         st.line_chart(cmp.set_index('Рік')[['Енергоспоживання, кВт·год екв.']])
 
     with tab4:
-        st.subheader('Умовні викиди CO₂ і питома екологічна інтенсивність')
-        st.markdown('**Розрахункові коефіцієнти сценарію:** 0,40 кг CO₂/кВт·год електроенергії; 230 кг CO₂/Гкал теплової енергії')
+        st.subheader('Викиди CO₂ і питома екологічна інтенсивність')
+        st.markdown('**Коефіцієнти розрахунку:** 0,40 кг CO₂/кВт·год електроенергії; 230 кг CO₂/Гкал теплової енергії.')
         records=monthly_indicators(year,dept_id)
         pollution=_round_table([{'Підрозділ':r['department'],'Місяць':MONTHS[r['month']-1],
                'CO₂, кг':r['co2_kg'],'Виручка, грн':r['revenue_grn'],
@@ -135,10 +136,10 @@ def show_lab2_page():
         if annual['revenue_grn']:
             st.metric('Питомі викиди на 1000 грн послуг',
                       f"{annual['co2_kg_per_1000grn']:.3f} кг")
-
+        st.caption('Виручку внесено для «Кінозалів»; для інших підрозділів цей питомий показник не обчислюється.')
 
     with tab5:
-        st.subheader('Модельні вихідні дані')
+        st.subheader('Вихідні дані')
         st.write('Можна змінити площу приміщення, робочі дні, температуру, загальні витрати та власну генерацію. Зміни зберігаються в SQLite.')
         selected_id=st.selectbox('Підрозділ для редагування',options=[i for i,_ in depts],format_func=lambda did:next(n for i,n in depts if i==did),key='lab2_edit_dept')
         month=st.selectbox('Місяць для редагування',range(1,13),format_func=lambda m:MONTHS[m-1],key='lab2_edit_month')
@@ -162,7 +163,7 @@ def show_lab2_page():
             indoor=st.number_input('Середня температура всередині, °C',value=float(cond[2]),step=0.5)
             exp=st.number_input('Загальні витрати, грн',min_value=0.0,value=float(fin[0] if fin else 0),step=100.0)
             generation=st.number_input('Власна генерація електроенергії, кВт·год',min_value=0.0,value=float(gen[0] if gen else 0),step=100.0)
-            save=st.form_submit_button('💾 Зберегти модельні дані',type='primary')
+            save=st.form_submit_button('💾 Зберегти дані',type='primary')
             if save:
                 conn=get_connection()
                 try:
@@ -179,4 +180,4 @@ def show_lab2_page():
         if st.button('🔄 Перерахувати збережені викиди CO₂'):
             refresh_emissions()
             st.success('Викиди у базі оновлено відповідно до поточного споживання.')
-
+        st.caption('Показники власної генерації за 2023–2025 рр. обчислено для сценарію СЕС.')

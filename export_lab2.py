@@ -1,4 +1,6 @@
 
+
+
 import csv
 from pathlib import Path
 from indicators import year_comparison, year_statistics, monthly_indicators, month_rows
